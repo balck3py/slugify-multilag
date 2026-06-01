@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/demo/">
+    <Project Path="demo/Slugify.MultiLang.Demo/Slugify.MultiLang.Demo.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Slugify.MultiLang/Slugify.MultiLang.csproj" />
+  </Folder>
+</Solution>
