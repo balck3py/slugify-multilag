@@ -1,12 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
+    <Version>1.0.2</Version>
     <TargetFramework>netstandard2.0</TargetFramework>
     <LangVersion>10.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>disable</ImplicitUsings>
     <AssemblyName>Slugify.MultiLang</AssemblyName>
     <RootNamespace>Slugify.MultiLang</RootNamespace>
+    <PackageId>Slugify.MultiLang</PackageId>
+    <Authors>balck3py</Authors>
+    <Description>Multi-language slug generator supporting 23+ languages including CJK, Arabic, Cyrillic, and more.</Description>
+    <PackageTags>slug;slugify;multilang;cjk;chinese;japanese;korean;arabic;url</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/balck3py/slugify-multilag</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/balck3py/slugify-multilag</PackageProjectUrl>
   </PropertyGroup>
-
 </Project>
