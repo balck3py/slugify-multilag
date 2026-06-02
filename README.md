@@ -28,6 +28,39 @@ It transliterates accented Latin, Greek, Cyrillic, Armenian, Georgian, Vietnames
 - **Configurable** — replacement char, lowercasing, strict mode, trimming, and a custom remove-regex.
 - **Extensible** — register your own character mappings at runtime via `Extend`.
 
+## How It Works
+
+Every string goes through a five-step pipeline:
+
+1. **NFC normalize** — Unicode Normalization Form C is applied so that pre-composed and decomposed forms are treated identically.
+2. **Per-character translation** — each character (including surrogate pairs for supplementary-plane code points) is looked up in order:
+   1. *Locale override map* — if `Locale` is set and that locale has an entry for the character.
+   2. *Global charmap* — Latin Extended, Greek, Cyrillic, Armenian, Georgian, Vietnamese, currencies, math symbols, CJK punctuation, …
+   3. *Passthrough* — characters with no entry are kept as-is.
+3. **Remove pass** — the built-in (or custom `Remove`) regex strips characters not useful in a URL.
+4. **Strict pass** (`Strict = true` by default) — the Unicode-aware pattern `[^\p{L}\p{N}\s]` removes anything that is not a letter, digit, or whitespace. This is how non-Latin scripts are **preserved**: Arabic, CJK, Hangul, Kana, Thai consonants, and Devanagari consonants all satisfy `\p{L}` and survive untouched.
+5. **Finalize** — whitespace runs are collapsed into the replacement char (default `-`); optional trim and lower-case are applied.
+
+### Script-handling strategies
+
+| Strategy | Scripts / locales | Detail |
+|---|---|---|
+| **Full charmap transliteration** | Latin Extended, Greek, Cyrillic (incl. Kazakh), Armenian, Georgian | Non-ASCII letter → ASCII (e.g. `é→e`, `Ж→Zh`, `Ñ→N`) |
+| **Locale-specific overrides** | `de`, `es`, `fr`, `pt`, `it`, `nl`, `sv`, `da`, `nb`, `bg`, `uk`, `vi` | Language-correct mapping before global charmap (e.g. `de`: `ü→ue`, `&→und`; `sv`: `ö→oe`, `&→och`; `da`: `ø→oe`, `å→aa`) |
+| **Charmap fallback** | `pl`, `tr`, `ms`, `id`, `tl`, and any unregistered locale | Global charmap only; diacritics not in the map pass through then get stripped by strict mode |
+| **Script-preserving passthrough** | Arabic, Chinese, Japanese, Korean, Thai, Devanagari | No charmap entry — letters survive via `\p{L}`; CJK punctuation (`，`, `。`, `！`, `？`, `：`, `「」`, `【】`, `—`, `·` …) is mapped to spaces and becomes the separator |
+
+### Thai and Devanagari (Hindi) — combining marks stripped
+
+Thai base consonants and Devanagari base consonants are Unicode letters (`\p{L}`) and survive intact.
+Their combining vowel signs and tone marks are Unicode *combining marks* (`\p{M}`) — e.g. Thai `้` `ู` `็` or Devanagari `ि` `ा` `ी`.
+With `Strict = true` (the default) these marks are removed, leaving consonant skeletons in the slug.
+Set `Strict = false` if phonetically complete Thai / Devanagari slugs are needed.
+
+### Arabic — letters preserved, diacritics dropped
+
+Arabic letters satisfy `\p{L}` and are preserved. Harakat (short-vowel diacritics such as `َ` `ِ` `ُ`) are combining marks (`\p{M}`) and are stripped by strict mode, which is fine for slug purposes since Arabic URLs routinely omit them.
+
 ## Installation
 
 This repository ships the source directly. Add a project reference to `csharp/src/Slugify.MultiLang/Slugify.MultiLang.csproj`, or drop `SlugifyHelper.cs` and `SlugifySlugOptions.cs` into your project.
@@ -86,12 +119,60 @@ SlugifyHelper.Extend(new Dictionary<char, string>
 
 ## Demo
 
-A runnable console demo showing 20+ languages lives in [`csharp/demo`](./csharp/demo):
+A runnable console demo showing 23 languages lives in [`csharp/demo`](./csharp/demo):
 
 ```bash
 cd csharp
 dotnet run --project demo/Slugify.MultiLang.Demo
 ```
+
+All examples below use the same source sentence — "傅总：你的马甲 又又又掉了！" ("Director Fu: Your alt account got exposed again and again and again!") — translated into each target language.
+
+### With explicit locale mapping
+
+| Language | Locale | Slug output |
+|---|---|---|
+| Español | `es` | `director-fu-tu-cuenta-alternativa-ha-quedado-expuesta-otra-vez-y-otra-vez-y-otra-vez` |
+| Português | `pt` | `diretor-fu-sua-conta-alternativa-foi-exposta-de-novo-e-de-novo-e-de-novo` |
+| Français | `fr` | `directeur-fu-votre-compte-alternatif-a-ete-expose-encore-et-encore-et-encore` |
+| Deutsch | `de` | `direktor-fu-dein-alternativkonto-ist-schon-wieder-und-wieder-und-wieder-aufgeflogen` |
+| Italiano | `it` | `direttore-fu-il-tuo-account-alternativo-e-stato-smascherato-ancora-e-ancora-e-ancora` |
+| Svenska | `sv` | `direktoer-fu-ditt-alternativa-konto-har-avsloejats-igen-och-igen-och-igen` |
+| Dansk | `da` | `direktoer-fu-din-alternative-konto-er-blevet-afsloeret-igen-og-igen-og-igen` |
+| Nederlands | `nl` | `directeur-fu-uw-alternatieve-account-is-alweer-en-nog-een-keer-ontmaskerd` |
+| Tiếng Việt | `vi` | `giam-doc-phu-tai-khoan-phu-cua-ban-da-bi-lo-lai-va-lai-va-lai` |
+
+> **`vi` note:** the locale entry only maps `Đ/đ → D/d`; the extensive Vietnamese diacritics (`ấ`, `ề`, `ộ`, …) are handled by the global charmap.
+
+### Charmap fallback (no dedicated locale entry)
+
+| Language | Locale | Slug output |
+|---|---|---|
+| Polski | `pl` | `dyrektorze-fu-twoje-alternatywne-konto-zostalo-ponownie-i-ponownie-zdemaskowane` |
+| Norsk | `no` | `direktor-fu-den-alternative-kontoen-din-har-blitt-avslort-igjen-og-igjen-og-igjen` |
+| Türkçe | `tr` | `mudur-fu-sahte-hesabin-yine-yine-yine-desifre-oldu` |
+| Bahasa Melayu | `ms` | `pengarah-fu-akaun-tiruan-anda-telah-terdedah-lagi-dan-lagi-dan-lagi` |
+| Bahasa Indonesia | `id` | `direktur-fu-akun-samaran-anda-telah-terbongkar-lagi-dan-lagi-dan-lagi` |
+| Filipino | `tl` | `direktor-fu-ang-iyong-alternatibong-account-ay-nabunyag-na-naman-at-naman-at-naman` |
+| English | `en` | `director-fu-your-alt-account-got-exposed-again-and-again-and-again` |
+
+> **`no` note:** Norwegian Bokmål (`nb`) **does** have a locale entry. The demo passes `no` which falls back to charmap. Use `Locale = "nb"` for proper Bokmål mapping (`ø→oe`, `å→aa`, `&→og`).
+
+### Script-preserving (Unicode passthrough)
+
+Non-Latin scripts with no charmap entries are preserved via `\p{L}`:
+
+| Language | Locale | Slug output |
+|---|---|---|
+| العربية | `ar` | `المدير-فو-لقد-تم-كشف-حسابك-البديل-مرة-أخرى-ومرة-أخرى-ومرة-أخرى` |
+| 日本語 | `ja` | `傅総-あなたのサブアカウントがまたまたまたバレちゃった` |
+| 한국어 | `ko` | `푸-총재-당신의-부계정이-또-또-또-들통났어요` |
+| ภาษาไทย | `th` † | `ผอำนวยการฝ-บญชอำพรางของคณถกเปดเผยอกและอกและอกครง` |
+| हिन्दी | `hi` † | `नदशक-फ-आपक-वकलपक-खत-फर-और-फर-और-फर-उजगर-ह-गय` |
+| 中文 (简体) | `zh` | `傅总-你的马甲-又又又掉了` |
+| 中文 (繁體) | `zh-tw` | `傅總-你的馬甲-又又又掉了` |
+
+† Combining vowel marks (`\p{M}`) are stripped by strict mode — see [Thai and Devanagari note](#thai-and-devanagari-hindi--combining-marks-stripped) in the _How It Works_ section.
 
 ## Project layout
 
