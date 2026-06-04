@@ -29,3 +29,8 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+## Java / Maven
+target/
+*.class
+.mvn/wrapper/maven-wrapper.jar

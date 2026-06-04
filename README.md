@@ -13,6 +13,7 @@
 |---|---|---|
 | **C# / .NET** | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
 | **Python (3.10+)** | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
+| **Java (17+)** | [`java/`](./java) — [README](./java/README.md) | [Maven Central](https://central.sonatype.com/artifact/io.github.balck3py/slugify-multilang) — `io.github.balck3py:slugify-multilang` |
 
 Both share the same charmap, locale overrides, and behavior; the Python package is a verified 1:1 port.
 
