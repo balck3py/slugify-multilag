@@ -7,6 +7,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-512BD4.svg)](https://learn.microsoft.com/dotnet/standard/net-standard)
 
+## Implementations
+
+| Language | Location | Package |
+|---|---|---|
+| **C# / .NET** | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
+| **Python (3.10+)** | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
+
+Both share the same charmap, locale overrides, and behavior; the Python package is a verified 1:1 port.
+
 ## What it does
 
 Turn any string into a clean, URL-safe slug:

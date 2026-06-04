@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "slugify-multilang"
+version = "1.0.3"
+description = "Multi-language slug generator supporting 23+ languages including CJK, Arabic, Cyrillic, and more. Faithful Python port of the C# Slugify.MultiLang library."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "balck3py" }]
+keywords = ["slug", "slugify", "multilang", "cjk", "chinese", "japanese", "korean", "arabic", "url"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Text Processing :: General",
+]
+dependencies = []  # zero third-party dependencies — standard library only
+
+[project.optional-dependencies]
+test = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/balck3py/slugify-multilag"
+Repository = "https://github.com/balck3py/slugify-multilag"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
+
+[tool.hatch.build.targets.wheel]
+packages = ["slugify_multilang"]
