@@ -34,3 +34,7 @@ dist/
 node_modules/
 js/dist/
 js/node_modules/
+
+## Maven
+target/
+hs_err_pid*.log

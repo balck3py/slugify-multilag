@@ -1,6 +1,6 @@
 # Slugify.MultiLang
 
-> 面向 .NET、Python 与 JavaScript/TypeScript 的多语言、零依赖 slug 生成器，扩展了 locale 支持，并对 CJK、阿拉伯文等非拉丁文字做了合理处理。
+> 面向 .NET、Python、JavaScript/TypeScript 与 Java 的多语言、零依赖 slug 生成器，扩展了 locale 支持，并对 CJK、阿拉伯文等非拉丁文字做了合理处理。
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
@@ -14,6 +14,7 @@
 | C# / .NET | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
 | Python (3.10+) | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
 | JavaScript / TypeScript | [`js/`](./js) — [README](./js/README.md) | [npm](https://www.npmjs.com/package/slugify-multilang) — `slugify-multilang` |
+| Java (8+) | [`java/`](./java) — [README](./java/README.md) | Maven 坐标 — `io.github.balck3py:slugify-multilang` |
 
 三种实现共用相同的字符表、locale 覆盖规则、默认选项和 slug 生成行为。
 
@@ -88,6 +89,18 @@
 npm install slugify-multilang
 ```
 
+### Java
+
+```xml
+<dependency>
+  <groupId>io.github.balck3py</groupId>
+  <artifactId>slugify-multilang</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+Maven 坐标已配置，待后续发布。发布前可在本地通过 `cd java && mvn package` 构建。
+
 ## 用法
 
 ```csharp
@@ -154,6 +167,26 @@ SlugifyHelper.Slugify("☂ rain");
 ```
 
 JavaScript 的选项名与 C# 保持一致：`Replacement`、`Remove`、`Lower`、`Strict`、`Trim`、`Locale`。包同时提供 ESM、CommonJS 与 TypeScript 类型声明；完整 API 和 23 种语言示例请见 [JavaScript README](./js/README.md)。
+
+### Java 用法
+
+```java
+import io.github.balck3py.slugify.multilang.SlugifyHelper;
+import io.github.balck3py.slugify.multilang.SlugifySlugOptions;
+
+String slug = SlugifyHelper.slugify("Hello, World!");
+// → "hello-world"
+
+SlugifySlugOptions options = new SlugifySlugOptions();
+options.setLocale("de");
+String german = SlugifyHelper.slugify("Müller & Söhne", options);
+// → "mueller-und-soehne"
+
+SlugifyHelper.slugify("Some Text", "_");
+// → "some_text"
+```
+
+Java 使用 `SlugifySlugOptions` 的 getter/setter 对应同一组六个选项。Maven 和完整 API 说明请见 [Java README](./java/README.md)。
 
 ## 演示
 
@@ -225,6 +258,10 @@ js/
 ├── src/                               # TypeScript 实现和映射数据
 ├── test.html                          # 本地构建包的浏览器测试页
 └── README.md                          # npm 包文档
+java/
+├── src/main/java/                     # Java 8 实现和映射数据
+├── pom.xml                            # Maven 坐标和构建元数据
+└── README.md                          # Maven 包文档
 ```
 
 ## 致谢

@@ -1,6 +1,6 @@
 # Slugify.MultiLang
 
-> A multi-language, dependency-free slug generator for .NET, Python, and JavaScript/TypeScript — with extended locale support and sensible handling of CJK, Arabic, and other non-Latin scripts.
+> A multi-language, dependency-free slug generator for .NET, Python, JavaScript/TypeScript, and Java — with extended locale support and sensible handling of CJK, Arabic, and other non-Latin scripts.
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
@@ -14,6 +14,7 @@
 | **C# / .NET** | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
 | **Python (3.10+)** | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
 | **JavaScript / TypeScript** | [`js/`](./js) — [README](./js/README.md) | [npm](https://www.npmjs.com/package/slugify-multilang) — `slugify-multilang` |
+| **Java (8+)** | [`java/`](./java) — [README](./java/README.md) | Maven coordinates — `io.github.balck3py:slugify-multilang` |
 
 All implementations share the same charmap, locale overrides, defaults, and slug-generation behavior.
 
@@ -87,6 +88,19 @@ This repository ships the source directly. Add a project reference to `csharp/sr
 npm install slugify-multilang
 ```
 
+### Java
+
+```xml
+<dependency>
+  <groupId>io.github.balck3py</groupId>
+  <artifactId>slugify-multilang</artifactId>
+  <version>1.0.0</version>
+</dependency>
+```
+
+The Maven coordinates are configured for a future publication. Build the
+module locally with `cd java && mvn package` until it is published.
+
 ## Usage
 
 ```csharp
@@ -156,6 +170,27 @@ The JavaScript options use the same PascalCase names as C#: `Replacement`,
 `Remove`, `Lower`, `Strict`, `Trim`, and `Locale`. It ships ESM, CommonJS, and
 TypeScript declaration files. See the [JavaScript README](./js/README.md) for
 the full API and 23-language examples.
+
+### Java usage
+
+```java
+import io.github.balck3py.slugify.multilang.SlugifyHelper;
+import io.github.balck3py.slugify.multilang.SlugifySlugOptions;
+
+String slug = SlugifyHelper.slugify("Hello, World!");
+// → "hello-world"
+
+SlugifySlugOptions options = new SlugifySlugOptions();
+options.setLocale("de");
+String german = SlugifyHelper.slugify("Müller & Söhne", options);
+// → "mueller-und-soehne"
+
+SlugifyHelper.slugify("Some Text", "_");
+// → "some_text"
+```
+
+The Java API uses `SlugifySlugOptions` getters and setters for the same six
+options. See the [Java README](./java/README.md) for Maven and API details.
 
 ## Demo
 
@@ -227,6 +262,10 @@ js/
 ├── src/                               # TypeScript implementation and mapping data
 ├── test.html                          # browser playground for the local build
 └── README.md                          # npm package documentation
+java/
+├── src/main/java/                     # Java 8 implementation and mapping data
+├── pom.xml                            # Maven coordinates and build metadata
+└── README.md                          # Maven package documentation
 ```
 
 ## Credits
