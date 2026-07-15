@@ -1,11 +1,21 @@
 # Slugify.MultiLang
 
-> 面向 .NET 的多语言、零依赖 slug 生成器 —— 流行 JavaScript 库 [`slugify`](https://github.com/simov/slugify) 的忠实 C# 移植版，扩展了 locale 支持，并对 CJK、阿拉伯文等非拉丁文字做了合理处理。
+> 面向 .NET、Python 与 JavaScript/TypeScript 的多语言、零依赖 slug 生成器，扩展了 locale 支持，并对 CJK、阿拉伯文等非拉丁文字做了合理处理。
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![.NET Standard 2.0](https://img.shields.io/badge/.NET%20Standard-2.0-512BD4.svg)](https://learn.microsoft.com/dotnet/standard/net-standard)
+
+## 实现与发布包
+
+| 语言 | 源码目录 | 发布包 |
+| --- | --- | --- |
+| C# / .NET | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
+| Python (3.10+) | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
+| JavaScript / TypeScript | [`js/`](./js) — [README](./js/README.md) | [npm](https://www.npmjs.com/package/slugify-multilang) — `slugify-multilang` |
+
+三种实现共用相同的字符表、locale 覆盖规则、默认选项和 slug 生成行为。
 
 ## 它能做什么
 
@@ -72,6 +82,12 @@
 </ItemGroup>
 ```
 
+### JavaScript / TypeScript
+
+```bash
+npm install slugify-multilang
+```
+
 ## 用法
 
 ```csharp
@@ -117,6 +133,27 @@ SlugifyHelper.Extend(new Dictionary<char, string>
 
 "☂♛".Slugify(); // → "umbrella-queen"
 ```
+
+### JavaScript / TypeScript 用法
+
+```ts
+import { extend, slugify, SlugifyHelper } from "slugify-multilang";
+
+slugify("Hello, World!");
+// → "hello-world"
+
+slugify("Müller & Söhne", { Locale: "de" });
+// → "mueller-und-soehne"
+
+slugify("Some Text", "_");
+// → "some_text"
+
+extend({ "☂": "umbrella" });
+SlugifyHelper.Slugify("☂ rain");
+// → "umbrella-rain"
+```
+
+JavaScript 的选项名与 C# 保持一致：`Replacement`、`Remove`、`Lower`、`Strict`、`Trim`、`Locale`。包同时提供 ESM、CommonJS 与 TypeScript 类型声明；完整 API 和 23 种语言示例请见 [JavaScript README](./js/README.md)。
 
 ## 演示
 
@@ -184,6 +221,10 @@ csharp/
 │   ├── SlugifyHelper.cs               # 核心逻辑 + 字符表 + locale 映射
 │   └── SlugifySlugOptions.cs          # 选项
 └── demo/Slugify.MultiLang.Demo/       # 多语言控制台演示（net8.0）
+js/
+├── src/                               # TypeScript 实现和映射数据
+├── test.html                          # 本地构建包的浏览器测试页
+└── README.md                          # npm 包文档
 ```
 
 ## 致谢

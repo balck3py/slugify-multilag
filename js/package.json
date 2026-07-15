@@ -1,0 +1,48 @@
+{
+  "name": "slugify-multilang",
+  "version": "1.0.3",
+  "description": "Multi-language slug generator with CJK, Arabic, Cyrillic, and locale support.",
+  "keywords": [
+    "slug",
+    "slugify",
+    "multilang",
+    "cjk",
+    "unicode",
+    "url"
+  ],
+  "license": "MIT",
+  "author": "balck3py",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/balck3py/slugify-multilag.git"
+  },
+  "bugs": {
+    "url": "https://github.com/balck3py/slugify-multilag/issues"
+  },
+  "homepage": "https://github.com/balck3py/slugify-multilag#readme",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean --target es2020",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.3"
+  }
+}

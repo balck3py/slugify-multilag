@@ -1,6 +1,6 @@
 # Slugify.MultiLang
 
-> A multi-language, dependency-free slug generator for .NET — a faithful C# port of the popular [`slugify`](https://github.com/simov/slugify) JavaScript library, with extended locale support and sensible handling of CJK, Arabic, and other non-Latin scripts.
+> A multi-language, dependency-free slug generator for .NET, Python, and JavaScript/TypeScript — with extended locale support and sensible handling of CJK, Arabic, and other non-Latin scripts.
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
@@ -13,8 +13,9 @@
 |---|---|---|
 | **C# / .NET** | [`csharp/`](./csharp) | [NuGet](https://www.nuget.org/packages/Slugify.MultiLang) — `Slugify.MultiLang` |
 | **Python (3.10+)** | [`python/`](./python) — [README](./python/README.md) | [PyPI](https://pypi.org/project/slugify-multilang/) — `slugify-multilang` |
+| **JavaScript / TypeScript** | [`js/`](./js) — [README](./js/README.md) | [npm](https://www.npmjs.com/package/slugify-multilang) — `slugify-multilang` |
 
-Both share the same charmap, locale overrides, and behavior; the Python package is a verified 1:1 port.
+All implementations share the same charmap, locale overrides, defaults, and slug-generation behavior.
 
 ## What it does
 
@@ -80,6 +81,12 @@ This repository ships the source directly. Add a project reference to `csharp/sr
 </ItemGroup>
 ```
 
+### JavaScript / TypeScript
+
+```bash
+npm install slugify-multilang
+```
+
 ## Usage
 
 ```csharp
@@ -125,6 +132,30 @@ SlugifyHelper.Extend(new Dictionary<char, string>
 
 "☂♛".Slugify(); // → "umbrella-queen"
 ```
+
+### JavaScript / TypeScript usage
+
+```ts
+import { extend, slugify, SlugifyHelper } from "slugify-multilang";
+
+slugify("Hello, World!");
+// → "hello-world"
+
+slugify("Müller & Söhne", { Locale: "de" });
+// → "mueller-und-soehne"
+
+slugify("Some Text", "_");
+// → "some_text"
+
+extend({ "☂": "umbrella" });
+SlugifyHelper.Slugify("☂ rain");
+// → "umbrella-rain"
+```
+
+The JavaScript options use the same PascalCase names as C#: `Replacement`,
+`Remove`, `Lower`, `Strict`, `Trim`, and `Locale`. It ships ESM, CommonJS, and
+TypeScript declaration files. See the [JavaScript README](./js/README.md) for
+the full API and 23-language examples.
 
 ## Demo
 
@@ -192,6 +223,10 @@ csharp/
 │   ├── SlugifyHelper.cs               # core logic + charmaps + locale maps
 │   └── SlugifySlugOptions.cs          # options
 └── demo/Slugify.MultiLang.Demo/       # multi-language console demo (net8.0)
+js/
+├── src/                               # TypeScript implementation and mapping data
+├── test.html                          # browser playground for the local build
+└── README.md                          # npm package documentation
 ```
 
 ## Credits

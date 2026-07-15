@@ -29,3 +29,8 @@ __pycache__/
 build/
 dist/
 *.egg-info/
+
+## JavaScript
+node_modules/
+js/dist/
+js/node_modules/
